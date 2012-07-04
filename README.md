@@ -15,10 +15,10 @@ The PCR API essentially consists of four types of objects: 'Courses', 'Sections'
 Course objects in the PCR API are essentially a group of that Course's Sections that were offered in a certain semester.  Courses in pcr-ruby are different, and match up most directly with 'Course History' objects of the PCR API.  It is my belief that when students think of a "course," they think of the entire history of the course and *not* the course offering for a specific semester.  Therefore, pcr-ruby does not associate Courses with specific semesters -- rather, Courses exist across time and represent a single curriculum and course code.
 
 pcr-ruby's Course objects have the following instance variables:
-*course_code -- a string in the format "DEPT-###", where "DEPT" is the four-letter department code and "###" is the three-digit course code.
-*sections -- an array of Section objects for the Course across all time.  Useful for calculating average ratings and other cumulative statistics.
-*id -- the Course's PCR API id. (Integer)
-*name -- the Course's plain-English name.  (String)
-*path -- the PCR API sub-path leading to the Course (or, more accurately, the Course History).  For example, "/coursehistories/1794/".  Or, more generally: "/coursehistories/[id]/".  (String)
-*reviews -- an array of Hashes that contain review data.
+*	course_code -- a string in the format "DEPT-###", where "DEPT" is the four-letter department code and "###" is the three-digit course code.
+*	sections -- an array of Section objects for the Course across all time.  Useful for calculating average ratings and other cumulative statistics.
+*	id -- the Course's PCR API id. (Integer)
+*	name -- the Course's plain-English name.  (String)
+*	path -- the PCR API sub-path leading to the Course (or, more accurately, the Course History).  For example, "/coursehistories/1794/".  Or, more generally: "/coursehistories/[id]/".  (String)
+*	reviews -- an array of Hashes that contain review data.
 
