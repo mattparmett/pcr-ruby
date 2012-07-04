@@ -19,7 +19,7 @@ module PCR
 	#Course object matches up with the coursehistory request of the pcr api.
 	#Course will have sections, represented by an array of Section objects
 	class Course
-		attr_accessor :course_code, :sections, :id, :name, :path, :reviews, :reviews_path
+		attr_accessor :course_code, :sections, :id, :name, :path, :reviews
 		
 		def initialize(args)
 			if args[:course_code].is_a? String #need to split string at "-" to make sure first part has 4 letter code and second has 3 numbers
@@ -34,8 +34,9 @@ module PCR
 				@id = json["result"]["id"]
 				@name = json["result"]["name"]
 				@path = json["result"]["path"]
-				@reviews = json["result"]["reviews"]
-				@reviews_path = @reviews["path"]
+				api_url_reviews = pcr.api_endpt + "coursehistories/" + self.id.to_s + "/reviews?token=" + pcr.token
+				json_reviews = JSON.parse(open(api_url_reviews).read)
+				@reviews = json_reviews["result"]["values"]
 			else
 				raise CourseError, "Invalid course code specified.  Use format [CCCC-###]."
 			end
@@ -48,17 +49,15 @@ module PCR
 			if metric.is_a? String
 				total = 0
 				n = 0
-				self.sections.each do |section|
-					ratings = section.reviews[:ratings]
+				self.reviews.each do |review|
+					ratings = review["ratings"]
 					if ratings.include? metric
-						puts section.semester + " - " + ratings[metric]
-						total = total + ratings[metric].to_f
+						total = total + review["ratings"][metric].to_f
 						n = n + 1
 					else
-						raise CourseError, "No ratings found for #{metric} in #{section.semester}."
+						raise CourseError, "No ratings found for \"#{metric}\" in #{self.name}."
 					end
 				end
-				
 				return (total/n)
 			else
 				raise CourseError, "Invalid metric format. Metric must be a string or symbol."
