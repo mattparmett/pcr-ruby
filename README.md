@@ -12,7 +12,10 @@ The PCR API essentially consists of four types of objects: 'Courses', 'Sections'
 
 ### 'Courses' in pcr-ruby ###
 
-Course objects in the PCR API are essentially a group of that Course's Sections that were offered in a certain semester.  Courses in pcr-ruby are different, and match up most directly with 'Course History' objects of the PCR API.  It is my belief that when students think of a "course," they think of the entire history of the course and *not* the course offering for a specific semester.  Therefore, pcr-ruby does not associate Courses with specific semesters -- rather, Courses exist across time and represent a single curriculum and course code.
+Course objects in the PCR API are essentially a group of that Course's Sections which were offered in a certain semester.  Courses in pcr-ruby are different, and match up most directly with 'Course History' objects of the PCR API.  It is my belief that when students think of a "course," they think of the entire history of the course and *not* the course offering for a specific semester.  Therefore, pcr-ruby does not associate Courses with specific semesters -- rather, Courses exist across time and represent a single curriculum and course code.
+
+To create a Course:
+`course = PCR::Course.new(:instance_variable => value)`
 
 pcr-ruby's Course objects have the following instance variables:
 *	**course_code** -- a string in the format "DEPT-###", where "DEPT" is the four-letter department code and "###" is the three-digit course code.
@@ -20,7 +23,7 @@ pcr-ruby's Course objects have the following instance variables:
 *	**id** -- the Course's PCR API id. (Integer)
 *	**name** -- the Course's plain-English name.  (String)
 *	**path** -- the PCR API sub-path leading to the Course (or, more accurately, the Course History).  For example, "/coursehistories/1794/".  Or, more generally: "/coursehistories/[id]/".  (String)
-*	**reviews** -- an array of Hashes that contain review data.
+*	**reviews** -- an array of Hashes that contain review data for each of the Course's sections.
 
 Courses have the following instance methods:
 *	**average(metric)** -- returns the average value, across all Sections, of "metric" as a Float.  "Metric" must be a recognized rating in the PCR API.  (Currently the names of these ratings are not intuitive, so I may provide plain-English access to rating names in the future.)
@@ -29,6 +32,9 @@ Courses have the following instance methods:
 ### 'Sections' in pcr-ruby ###
 
 In pcr-ruby, Sections are single offerings of a Course.  Each Section is associated with a certain Instructor and semester -- think of a Section as the individual classes under the umbrella of the Course.  Sections in the PCR API are treated similarly.
+
+To create a Section:
+`section = PCR::Section.new(:instance_variable => value)`
 
 Sections have the following instance variables:
 *	**aliases** -- an array of the Section's course listings.  Most of the time, a Section will only have one listing (the course code followed by a section code, like "-001"), but Sections that are cross-listed between departments may have multiple listings.

@@ -1,6 +1,17 @@
 require 'json'
 require 'open-uri'
 
+# class Hash
+	# def indifferent_access()
+		# self.each do |h, k|
+		   # case k
+			 # when String then sym = k.to_sym; h[sym] if h.key?(sym)
+			 # when Symbol then str = k.to_s; h[str] if h.key?(str)
+		   # end
+		# end
+	# end
+# end
+
 module PCR
 
 	class API
@@ -22,6 +33,14 @@ module PCR
 		attr_accessor :course_code, :sections, :id, :name, :path, :reviews
 		
 		def initialize(args)
+			#Set indifferent access for args
+			args.default_proc = proc do |h, k|
+			   case k
+				 when String then sym = k.to_sym; h[sym] if h.key?(sym)
+				 when Symbol then str = k.to_s; h[str] if h.key?(str)
+			   end
+			end
+			
 			if args[:course_code].is_a? String #need to split string at "-" to make sure first part has 4 letter code and second has 3 numbers
 				@course_code = args[:course_code]
 				pcr = PCR::API.new()
@@ -87,6 +106,14 @@ module PCR
 		attr_accessor :aliases, :id, :name, :path, :semester, :description, :comments, :ratings, :instructor
 		
 		def initialize(args)
+			#Set indifferent access for args
+			args.default_proc = proc do |h, k|
+			   case k
+				 when String then sym = k.to_sym; h[sym] if h.key?(sym)
+				 when Symbol then str = k.to_s; h[str] if h.key?(str)
+			   end
+			end
+			
 			pcr = PCR::API.new()
 			@aliases = args[:aliases] if args[:aliases].is_a? Array
 			@id = args[:id] if args[:id].is_a? Integer
