@@ -98,14 +98,18 @@ module PCR
 			
 			
 			if metric.is_a? String
-				#Get the rating for the most recent section
+				#Get the most recent section
 				section = self.sections[-1]
-				ratings = section.reviews[:ratings]
-				if ratings.include? metric
-					return ratings[metric].to_f
-				else
-					raise CourseError, "No ratings found for #{metric} in #{section.semester}."
+				
+				#Iterate through all the section reviews, and if the section review id matches the id of the most recent section, return that rating
+				self.reviews.each do |review|
+					if review["section"]["id"].to_s[0..4].to_i == section.id
+						return review["ratings"][metric]
+					end
 				end
+				
+				raise CourseError, "No ratings found for #{metric} in #{section.semester}."
+				
 			else
 				raise CourseError, "Invalid metric format. Metric must be a string or symbol."
 			end
