@@ -15,7 +15,8 @@ The PCR API essentially consists of four types of objects: 'Courses', 'Sections'
 Course objects in the PCR API are essentially a group of that Course's Sections which were offered in a certain semester.  Courses in pcr-ruby are different, and match up most directly with 'Course History' objects of the PCR API.  It is my belief that when students think of a "course," they think of the entire history of the course and *not* the course offering for a specific semester.  Therefore, pcr-ruby does not associate Courses with specific semesters -- rather, Courses exist across time and represent a single curriculum and course code.
 
 To create a Course:
-`course = PCR::Course.new(:instance_variable => value)`
+`course = PCR::Course.new(:course_code => "DEPT-###")`
+All other instance variables will auto-populate based on data from the PCR API.
 
 pcr-ruby's Course objects have the following instance variables:
 *	**course_code** -- a string in the format "DEPT-###", where "DEPT" is the four-letter department code and "###" is the three-digit course code.
@@ -35,6 +36,7 @@ In pcr-ruby, Sections are single offerings of a Course.  Each Section is associa
 
 To create a Section:
 `section = PCR::Section.new(:instance_variable => value)`
+Possible instance variables available for setting in the Section initialize method are: aliases, id, name, path, semester.
 
 Sections have the following instance variables:
 *	**aliases** -- an array of the Section's course listings.  Most of the time, a Section will only have one listing (the course code followed by a section code, like "-001"), but Sections that are cross-listed between departments may have multiple listings.
