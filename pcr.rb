@@ -72,7 +72,7 @@ module PCR
 				section = self.sections[0]
 				ratings = section.reviews[:ratings]
 				if ratings.include? metric
-					return ratings[metric]
+					return ratings[metric].to_f
 				else
 					raise CourseError, "No ratings found for #{metric} in #{section.semester}."
 				end
