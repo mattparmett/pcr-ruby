@@ -51,3 +51,27 @@ Sections have the following instance variables:
 
 Sections have the following instance methods:
 *	**reviews()** -- retrieves the Section's review data from PCR.  Returns a Hash in the format {"comments" => @comments, "ratings" => @ratings}.
+
+## pcr-ruby Usage Examples ##
+
+Here are some (hopefully very simple and intuitive) usage examples for pcr-ruby:
+
+### Get average course quality rating ###
+Let's say we want to find the average course quality rating for Introduction to International Relations, PSCI-150:
+
+`require 'pcr.rb'
+course_code = "PSCI-150"
+course = PCR::Course.new(:course_code => course_code)
+puts course.average("rCourseQuality") #=> 3.041`
+
+Or, even more briefly:
+
+`require 'pcr.rb'
+puts PCR::Course.new(:course_code => "PSCI-150").average("rCourseQuality") #=> 3.041`
+
+### Get most recent course difficulty rating ###
+Finding the most recent section's course difficulty rating is just as easy:
+
+`require 'pcr.rb'
+course = PCR::Course.new(:course_code => "PSCI-150")
+puts course.recent("rDifficulty") #=> 2.55`
