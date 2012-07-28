@@ -3,6 +3,19 @@ require 'open-uri'
 
 module PCR
 
+	#Add some useful String methods
+	class ::String
+		#Checks if String is valid Penn course code format
+		def isValidCourseCode?
+			test = self.split('-')
+			if test[0].length == 4 and test[1].length == 3
+				true
+			else
+				false
+			end
+		end
+	end
+
 	#API class handles token and api url, so both are easily changed
 	class API
 		attr_accessor :token, :api_endpt
@@ -31,7 +44,7 @@ module PCR
 			end
 			
 			#Initialization actions
-			if args[:course_code].is_a? String #need to split string at "-" to make sure first part has 4 letter code and second has 3 numbers?
+			if args[:course_code].is_a? String and args[:course_code].isValidCourseCode?
 				@course_code = args[:course_code]
 				
 				#Read JSON from the PCR API
@@ -56,7 +69,7 @@ module PCR
 				@reviews = json_reviews["result"]["values"]
 
 			else
-				raise CourseError, "Invalid course code specified.  Use format [CCCC-###]."
+				raise CourseError, "Invalid course code specified.  Use format [DEPT-###]."
 			end
 		end
 		
