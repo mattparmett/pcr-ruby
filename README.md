@@ -106,3 +106,10 @@ require 'pcr.rb'
 course = PCR::Course.new(:course_code => "PSCI-150")
 puts course.recent("rDifficulty") #=> 2.5
 ```
+
+### Get professor's average "ability to stimulate student interest" rating ###
+```ruby
+require 'pcr.rb'
+instructor = PCR::Instructor.new(:id => "1090-LINDA-H-ZHAO")
+puts instructor.average("rStimulateInterest").round(2) #=> 1.7
+```
