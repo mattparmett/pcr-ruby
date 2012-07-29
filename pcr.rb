@@ -312,7 +312,7 @@ module PCR
 			
 			@name = json["result"]["name"].downcase.titlecase unless @name
 			@path = json["result"]["path"] unless @path
-			@sections = json["result"]["reviews"] unless @sections #Mislabeled reviews in PCR API
+			@sections = json["result"]["reviews"]["values"] unless @sections #Mislabeled reviews in PCR API
 		end
 		
 		#Separate method for getting review data in case we don't want to make an extra API hit each init

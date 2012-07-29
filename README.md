@@ -35,7 +35,9 @@ Courses have the following instance methods:
 In pcr-ruby, Sections are single offerings of a Course.  Each Section is associated with a certain Instructor and semester -- think of a Section as the individual classes under the umbrella of the Course.  Sections in the PCR API are treated similarly.
 
 To create a Section:
-`section = PCR::Section.new(:instance_variable => value)`
+```ruby
+section = PCR::Section.new(:instance_variable => value)
+```
 Possible instance variables available for setting in the Section initialize method are: aliases, id, name, path, semester.
 
 Sections have the following instance variables:
@@ -51,6 +53,29 @@ Sections have the following instance variables:
 
 Sections have the following instance methods:
 *	**reviews()** -- retrieves the Section's review data from PCR.  Returns a Hash in the format {"comments" => @comments, "ratings" => @ratings}.
+
+### 'Instructors' in pcr-ruby ###
+
+Instructors are arguably the most important part of PCR -- many students use PCR as a substitute for RateMyProfessor and base their course decisions on PCR professor ratings.  The Instructor object represents a single professor through time.  As of now, pcr-ruby allows you to retrieve both the average and most recent ratings of a professor; I may add the ability to look up ratings for specific courses/semesters taught in the future.
+
+To create an Instructor:
+```ruby
+instructor = PCR::Instructor.new(:id => id [, :name => name, :path => path, :sections => sections])
+```
+(You really only need to pass the id argument, as pcr-ruby will automatically retrieve the other information from PCR.)
+
+Insctructors have the following instance variables:
+*	**id** -- the Instructor's PCR id, a String in the form of "ID#-FIRST-M-LAST".
+*	**name** -- the Instructor's name, a String in the form of "FIRST-M-LAST".
+*	**path** -- the PCR sub-path that leads to the Instructor, a String in the form of "/instructors/id".
+*	**sections** -- a Hash of sections taught by Instructor.
+*	**reviews** -- a Hash of reviews of Instructor in JSON.
+
+Instructors have the following instance methods:
+*	**getInfo** -- a utility method to fill in missing info in Instructor object (used to minimize unnecessary API hits)
+*	**getReviews** -- a utility method to get review info for Instructor object (used to minimize unnecessary API hits)
+*	**average(metric)** -- returns the average value, across all Sections taught by Instructor, of "metric" as a Float.  "Metric" must be a recognized rating in the PCR API.  (Currently the names of these ratings are not intuitive, so I may provide plain-English access to rating names in the future.)
+*	**recent(metric)** -- returns the average value of "metric" for the most recent semester in which the Instructor taught as a float. (For example, if the professor taught 3 classes in the most recent semester, this would return the average of "metric" over the three classes.)  "Metric" must be a recognized rating in the PCR API.  (Currently the names of these ratings are not intuitive, so I may provide plain-English access to rating names in the future.)
 
 ## pcr-ruby Usage Examples ##
 
