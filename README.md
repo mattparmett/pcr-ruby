@@ -15,7 +15,9 @@ The PCR API essentially consists of four types of objects: 'Courses', 'Sections'
 Course objects in the PCR API are essentially a group of that Course's Sections which were offered in a certain semester.  Courses in pcr-ruby are different, and match up most directly with 'Course History' objects of the PCR API.  It is my belief that when students think of a "course," they think of the entire history of the course and *not* the course offering for a specific semester.  Therefore, pcr-ruby does not associate Courses with specific semesters -- rather, Courses exist across time and represent a single curriculum and course code.
 
 To create a Course:
-`course = PCR::Course.new(:course_code => "DEPT-###")`
+```ruby
+course = PCR::Course.new(:course_code => "DEPT-###")
+```
 All other instance variables will auto-populate based on data from the PCR API.
 
 pcr-ruby's Course objects have the following instance variables:
@@ -113,3 +115,6 @@ require 'pcr.rb'
 instructor = PCR::Instructor.new(:id => "1090-LINDA-H-ZHAO")
 puts instructor.average("rStimulateInterest").round(2) #=> 1.7
 ```
+
+## TODO ##
+*	Implement search by professor last/first name rather than by ID.  ID is unintuitive.  Will probably need to see if I can make a lookup method, or simply pull down a database of all instructors and do a search on that database.
