@@ -1,5 +1,7 @@
 require 'json'
 require 'open-uri'
+require 'time'
+require 'csv'
 
 module PCR
 
@@ -68,6 +70,25 @@ module PCR
 				elsif season < compSeason #compSeason is later
 					return false
 				end
+			end
+		end
+	end
+	
+	#Add useful array methods
+	class Array
+		def binary_search(target)
+			self.search_iter(0, self.length-1, target)
+		end
+
+		def search_iter(lower, upper, target)
+			return -1 if lower > upper
+			mid = (lower+upper)/2
+			if (self[mid] == target)
+				mid
+			elsif (target < self[mid])
+				self.search_iter(lower, mid-1, target)
+			else
+				self.search_iter(mid+1, upper, target)
 			end
 		end
 	end
@@ -298,9 +319,11 @@ module PCR
 			@path = args[:path] if args[:path].is_a? String
 			@sections = args[:sections] if args[:sections].is_a? Hash
 			
-			#Hit PCR API to get missing info
-			self.getInfo
-			self.getReviews
+			#Hit PCR API to get missing info, if requested
+			if args[:hit_api] == true
+				self.getInfo
+				self.getReviews
+			end
 		end
 		
 		#Hit the PCR API to get all missing info
@@ -416,5 +439,84 @@ module PCR
 			end
 		end
 	end
-	
 end
+	
+	def downloadInstructors(instructors_db)
+		pcr = PCR::API.new()
+		api_url = pcr.api_endpt + "instructors/" + "?token=" + pcr.token
+		#puts "Downloading instructors json..."
+		json = JSON.parse(open(api_url).read)
+		
+		#Parse api data, writing to file
+		begin
+			File.open(instructors_db, 'w') do |f|
+				instructor_hashes = json["result"]["values"]
+				file_lines = []
+				#puts "Constructing instructor file_lines"
+				instructor_hashes.each do |instructor|
+					n = instructor["name"].split(" ")
+					file_lines << ["#{n[2]} #{n[1]} #{n[0]}",instructor["id"]] if n.length == 3 #if instructor has middle name
+					file_lines << ["#{n[1]} #{n[0]}",instructor["id"]] if n.length == 2 #if instructor does not have middle name
+				end
+				
+				#Sort lines alphabetically
+				#puts "sorting file lines alphabetically..."
+				file_lines.sort! { |a,b| a[0] <=> b[0] }
+
+				#Write lines to csv file
+				#puts "writing file lines to csv file..."
+				file_lines.each { |line|	f.write("#{line[0]},#{line[1]}\n") }
+			end
+		rescue IOError => e
+		  puts "Could not write to instructors file"
+		rescue Errno::ENOENT => e
+		  puts "Could not open instructors file"
+		end
+	end
+
+	def instructorSearch(args)
+		#Set indifferent access for args
+		args.default_proc = proc do |h, k|
+		   case k
+			 when String then sym = k.to_sym; h[sym] if h.key?(sym)
+			 when Symbol then str = k.to_s; h[str] if h.key?(str)
+		   end
+		end
+		
+		#Set args
+		first_name = args[:first_name]
+		middle_initial = args[:middle_initial]
+		last_name = args[:last_name]
+		
+		#Check if we've downloaded instructors in last week
+		begin
+			last_dl_time = Time.local(File.mtime("instructors.txt").tv_sec).tv_sec
+			#puts last_dl_time
+		rescue Errno::ENOENT => e
+		  downloadInstructors("instructors.txt") #instructors file doesn't exist, so download
+		else
+			current_time = Time.local(Time.now().tv_sec).tv_sec
+			#puts current_time
+			if current_time - last_dl_time <= 604800 #1 week in seconds
+				downloadInstructors("instructors.txt")
+			end
+		end
+		
+		#Check if instructors file exists
+		# begin
+			# f = File.open("instructors.txt", "rb")
+		# rescue Errno::ENOENT => e
+			# downloadInstructors("instructors.txt")
+		# end
+		
+		#Search for instructor name in instructors file and get corresponding ids, in an array
+		#puts "searching instructors file..."
+		results = []
+		CSV.foreach("instructors.txt") do |line|
+			results << {line[0] => line[1]}	if line[0].include? last_name.upcase
+		end
+		
+		return results
+		
+	end
+end #module
