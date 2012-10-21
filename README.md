@@ -4,6 +4,8 @@ pcr-ruby is a simple, intuitive way to retrieve course data from the Penn Course
 
 ## How to use pcr-ruby #
 
+**NOTE: As of gem version 0.1, these instructions are out of date.  The readme will be updated as soon as possible to reflect the changes.  (The code has been cleaned up significantly and made easier to use with custom tokens; stay tuned.)**
+
 *This section will change a lot as pcr-ruby is developed.  As such, this section may not be fully accurate, but I will try to keep the instructions as current as possible.*
 
 pcr-ruby follows the structure of the PCR API, with a few name changes to make object identities and roles clearer in your code.  (Before using pcr-ruby, you should most definitely read the PCR API documentation, the link to which you should recieve upon being granted your API token.)
