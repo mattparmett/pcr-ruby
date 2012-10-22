@@ -100,7 +100,7 @@ Or, even more briefly:
 ```ruby
 require 'pcr.rb'
 pcr = PCR.new(API_TOKEN)
-puts pcr.course("PSCI-150")course.average("rCourseQuality")
+puts pcr.course("PSCI-150").average("rCourseQuality")
 #=> 3.041
 ```
 
