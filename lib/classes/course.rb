@@ -3,18 +3,9 @@
 class Course < PCR
   attr_accessor :course_code, :sections, :id, :name, :path, :reviews
   
-  def initialize(args)
-    #Set indifferent access for args hash
-    args.default_proc = proc do |h, k|
-       case k
-       when String then sym = k.to_sym; h[sym] if h.key?(sym)
-       when Symbol then str = k.to_s; h[str] if h.key?(str)
-       end
-    end
-        
-    #Initialization actions
-    if args[:course_code].is_a? String and args[:course_code].isValidCourseCode?
-      @course_code = args[:course_code]
+  def initialize(course_code)
+    if course_code.is_a? String and course_code.isValidCourseCode?
+      @course_code = course_code
       
       #Read JSON from the PCR API
       api_url = @@api_endpt + "coursehistories/" + self.course_code + "/?token=" + @@token
@@ -23,7 +14,7 @@ class Course < PCR
       #Create array of Section objects, containing all Sections found in the API JSON for the Course
       @sections = []
       json["result"]["courses"].each do |c|
-        @sections << Section.new(c["id"], :aliases => c["aliases"], :name => c["name"], :path => c["path"], :semester => c["semester"], :hit_api => true)
+        @sections << Section.new(c["id"])
       end
       
       #Set variables according to Course JSON data
@@ -64,7 +55,7 @@ class Course < PCR
       end
       
       #Return average score as a float
-      return (total/n)
+      (total/n)
       
     else
       raise CourseError, "Invalid metric format. Metric must be a string or symbol."

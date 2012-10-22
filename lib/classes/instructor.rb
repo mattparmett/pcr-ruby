@@ -2,32 +2,18 @@
 class Instructor < PCR
   attr_accessor :id, :name, :path, :sections, :reviews
   
-  def initialize(id, args = {})
-    #Set indifferent access for args
-    if args.length > 0
-      args.default_proc = proc do |h, k|
-         case k
-         when String then sym = k.to_sym; h[sym] if h.key?(sym)
-         when Symbol then str = k.to_s; h[str] if h.key?(str)
-         end
-      end	
-    end
-    
+  def initialize(id)    
     #Assign args. ID is necessary because that's how we look up Instructors in the PCR API.
     if id.is_a? String
       @id = id
     else
       raise InstructorError("Invalid Instructor ID specified.")
     end
-
-    @name = args[:name].downcase.titlecase if args[:name].is_a? String
-    @path = args[:path] if args[:path].is_a? String
-    @sections = args[:sections] if args[:sections].is_a? Hash
     
     #Hit PCR API to get missing info based on id
-    unless args[:hit_api] == false
-      self.getInfo; self.getReviews
-    end
+    self.getInfo
+    self.getReviews
+
   end
   
   #Hit the PCR API to get all missing info
@@ -76,7 +62,7 @@ class Instructor < PCR
       end
       
       #Return average score as a float
-      return (total/n)
+      (total/n)
       
     else
       raise CourseError, "Invalid metric format. Metric must be a string or symbol."
@@ -97,7 +83,7 @@ class Instructor < PCR
       self.getReviews
       self.reviews.each do |review|
         if section_ids.index(review["section"]["id"].to_i).nil?
-          s = PCR::Section.new(:id => review["section"]["id"].to_i, :hit_api => false)
+          s = PCR::Section.new(review["section"]["id"].to_i, false)
           sections << s
           section_ids << s.id
         end
@@ -134,7 +120,8 @@ class Instructor < PCR
         end
       end
 
-      return total / num
+      # Return recent rating
+      total / num
       
     else
       raise CourseError, "Invalid metric format. Metric must be a string or symbol."

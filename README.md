@@ -4,13 +4,11 @@ pcr-ruby is a simple, intuitive way to retrieve course data from the Penn Course
 
 ## How to use pcr-ruby #
 
-**NOTE: As of gem version 0.1, these instructions are out of date.  The readme will be updated as soon as possible to reflect the changes.  (The code has been cleaned up significantly and made easier to use with custom tokens; stay tuned.)**
-
-*This section will change a lot as pcr-ruby is developed.  As such, this section may not be fully accurate, but I will try to keep the instructions as current as possible.*
+*This section may change a lot as pcr-ruby is developed.  As such, this section may not be fully accurate, but I will try to keep the instructions as current as possible.*
 
 pcr-ruby follows the structure of the PCR API, with a few name changes to make object identities and roles clearer in your code.  (Before using pcr-ruby, you should most definitely read the PCR API documentation, the link to which you should recieve upon being granted your API token.)
 
-The PCR API essentially consists of four types of objects: 'Courses', 'Sections', 'Instructors', and 'Course Histories'.  pcr-ruby aims to provide intuitive access to the data contained in these four object types while abstracting you and your user from background processing and unnecessary data.  To that end, pcr-ruby (thus far) consists of two types of objects: 'Courses' and 'Sections' ('Instructors' coming soon).
+The PCR API essentially consists of four types of objects: 'Courses', 'Sections', 'Instructors', and 'Course Histories'.  pcr-ruby aims to provide intuitive access to the data contained in these four object types while abstracting you and your user from background processing and unnecessary data.  To that end, pcr-ruby (thus far) consists of two types of objects: 'Courses', 'Sections', and 'Instructors'.
 
 ### 'Courses' in pcr-ruby ###
 
@@ -18,7 +16,9 @@ Course objects in the PCR API are essentially a group of that Course's Sections 
 
 To create a Course:
 ```ruby
-course = PCR::Course.new(:course_code => "DEPT-###")
+require 'pcr-ruby'
+pcr = PCR.new(api_token)
+course = pcr.course(course_code)
 ```
 All other instance variables will auto-populate based on data from the PCR API.
 
@@ -40,7 +40,9 @@ In pcr-ruby, Sections are single offerings of a Course.  Each Section is associa
 
 To create a Section:
 ```ruby
-section = PCR::Section.new(:instance_variable => value)
+require 'pcr-ruby'
+pcr = PCR.new(api_token)
+section = pcr.section(id)
 ```
 Possible instance variables available for setting in the Section initialize method are: aliases, id, name, path, semester.
 
@@ -53,10 +55,8 @@ Sections have the following instance variables:
 *	**description** -- a string containing the class description, which is written by the Section's Instructor and details the scope and characteristics of the class.
 *	**comments** -- a string containing PCR's comments about the Section.  The comments are the most major part of the written review, and are sourced from student exit surveys.
 *	**ratings** -- a Hash of metrics and the ratings of the Section for each metric.
-*	**instructor** (to be developed) -- the Instructor object for the Section's professor.
-
-Sections have the following instance methods:
-*	**reviews()** -- retrieves the Section's review data from PCR.  Returns a Hash in the format {"comments" => @comments, "ratings" => @ratings}.
+*	**instructors** an Array of the Section's instructors.
+*	**reviews** -- a Hash of the Section's review data, in the format {"comments" => @comments, "ratings" => @ratings}.
 
 ### 'Instructors' in pcr-ruby ###
 
@@ -64,20 +64,19 @@ Instructors are arguably the most important part of PCR -- many students use PCR
 
 To create an Instructor:
 ```ruby
-instructor = PCR::Instructor.new(:id => id [, :name => name, :path => path, :sections => sections])
+require 'pcr-ruby'
+pcr = PCR.new(api_token)
+instructor = pcr.instructor(id)
 ```
-(You really only need to pass the id argument, as pcr-ruby will automatically retrieve the other information from PCR.)
 
-Insctructors have the following instance variables:
-*	**id** -- the Instructor's PCR id, a String in the form of "ID#-FIRST-M-LAST".
+Insctructors have the following instance variables.  All variables other than **id**, which is user-specified, will be filled from the PCR API:
+*	**id** -- the Instructor's PCR id, a String in the form of "ID#-FIRST-M-LAST".  The PCR API also accepts a String in the form of "ID#".
 *	**name** -- the Instructor's name, a String in the form of "FIRST-M-LAST".
 *	**path** -- the PCR sub-path that leads to the Instructor, a String in the form of "/instructors/id".
 *	**sections** -- a Hash of sections taught by Instructor.
 *	**reviews** -- a Hash of reviews of Instructor in JSON.
 
 Instructors have the following instance methods:
-*	**getInfo** -- a utility method to fill in missing info in Instructor object (used to minimize unnecessary API hits)
-*	**getReviews** -- a utility method to get review info for Instructor object (used to minimize unnecessary API hits)
 *	**average(metric)** -- returns the average value, across all Sections taught by Instructor, of "metric" as a Float.  "Metric" must be a recognized rating in the PCR API.  (Currently the names of these ratings are not intuitive, so I may provide plain-English access to rating names in the future.)
 *	**recent(metric)** -- returns the average value of "metric" for the most recent semester in which the Instructor taught as a float. (For example, if the professor taught 3 classes in the most recent semester, this would return the average of "metric" over the three classes.)  "Metric" must be a recognized rating in the PCR API.  (Currently the names of these ratings are not intuitive, so I may provide plain-English access to rating names in the future.)
 
@@ -91,7 +90,8 @@ Let's say we want to find the average course quality rating for Introduction to 
 ```ruby
 require 'pcr.rb'
 course_code = "PSCI-150"
-course = PCR::Course.new(:course_code => course_code)
+pcr = PCR.new(API_TOKEN)
+course = pcr.course(course_code)
 puts course.average("rCourseQuality") #=> 3.041
 ```
 
@@ -99,7 +99,9 @@ Or, even more briefly:
 
 ```ruby
 require 'pcr.rb'
-puts PCR::Course.new(:course_code => "PSCI-150").average("rCourseQuality") #=> 3.041
+pcr = PCR.new(API_TOKEN)
+puts pcr.course("PSCI-150")course.average("rCourseQuality")
+#=> 3.041
 ```
 
 ### Get most recent course difficulty rating ###
@@ -107,16 +109,19 @@ Finding the most recent section's course difficulty rating is just as easy:
 
 ```ruby
 require 'pcr.rb'
-course = PCR::Course.new(:course_code => "PSCI-150")
+pcr = PCR.new(API_TOKEN)
+course = pcr.course("PSCI-150")
 puts course.recent("rDifficulty") #=> 2.5
 ```
 
 ### Get professor's average "ability to stimulate student interest" rating ###
 ```ruby
 require 'pcr.rb'
-instructor = PCR::Instructor.new(:id => "1090-LINDA-H-ZHAO")
+pcr = PCR.new(API_TOKEN)
+instructor = pcr.instructor("1090-LINDA-H-ZHAO")
 puts instructor.average("rStimulateInterest").round(2) #=> 1.7
 ```
 
 ## TODO ##
+* Implement stricter checks on course code arguments
 *	Implement search by professor last/first name rather than by ID.  ID is unintuitive.  Will probably need to see if I can make a lookup method, or simply pull down a database of all instructors and do a search on that database.

@@ -15,12 +15,12 @@ class PCR
     Course.new(course_code)
   end
   
-  def section(*args)
-    Section.new(*args)
+  def section(id, hit_api = true)
+    Section.new(id, hit_api)
   end
   
-  def instructor(id, *args)
-    Instructor.new(id, *args)
+  def instructor(id)
+    Instructor.new(id)
   end
 end
 
