@@ -2,6 +2,13 @@
 
 pcr-ruby is a simple, intuitive way to retrieve course data from the Penn Course Review API in Ruby.  With pcr-ruby and a valid API token (which you can request [here](https://docs.google.com/spreadsheet/viewform?hl=en_US&formkey=dGZOZkJDaVkxdmc5QURUejAteFdBZGc6MQ#gid=0)), your Ruby project has access to reviews, ratings, and other information for all Penn courses.
 
+## Installation ##
+
+pcr-ruby is a gem hosted on rubygems, so installation is as simple as:
+```
+gem install pcr-ruby
+```
+
 ## How to use pcr-ruby #
 
 *This section may change a lot as pcr-ruby is developed.  As such, this section may not be fully accurate, but I will try to keep the instructions as current as possible.*
