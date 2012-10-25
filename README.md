@@ -51,7 +51,6 @@ require 'pcr-ruby'
 pcr = PCR.new(api_token)
 section = pcr.section(id)
 ```
-Possible instance variables available for setting in the Section initialize method are: aliases, id, name, path, semester.
 
 Sections have the following instance variables:
 *	**aliases** -- an array of the Section's course listings.  Most of the time, a Section will only have one listing (the course code followed by a section code, like "-001"), but Sections that are cross-listed between departments may have multiple listings.
