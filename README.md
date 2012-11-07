@@ -51,7 +51,6 @@ require 'pcr-ruby'
 pcr = PCR.new(api_token)
 section = pcr.section(id)
 ```
-Possible instance variables available for setting in the Section initialize method are: aliases, id, name, path, semester.
 
 Sections have the following instance variables:
 *	**aliases** -- an array of the Section's course listings.  Most of the time, a Section will only have one listing (the course code followed by a section code, like "-001"), but Sections that are cross-listed between departments may have multiple listings.
@@ -95,7 +94,7 @@ Here are some (hopefully very simple and intuitive) usage examples for pcr-ruby:
 Let's say we want to find the average course quality rating for Introduction to International Relations, PSCI-150:
 
 ```ruby
-require 'pcr.rb'
+require 'pcr-ruby'
 course_code = "PSCI-150"
 pcr = PCR.new(API_TOKEN)
 course = pcr.course(course_code)
@@ -105,7 +104,7 @@ puts course.average("rCourseQuality") #=> 3.041
 Or, even more briefly:
 
 ```ruby
-require 'pcr.rb'
+require 'pcr-ruby'
 pcr = PCR.new(API_TOKEN)
 puts pcr.course("PSCI-150").average("rCourseQuality")
 #=> 3.041
@@ -115,7 +114,7 @@ puts pcr.course("PSCI-150").average("rCourseQuality")
 Finding the most recent section's course difficulty rating is just as easy:
 
 ```ruby
-require 'pcr.rb'
+require 'pcr-ruby'
 pcr = PCR.new(API_TOKEN)
 course = pcr.course("PSCI-150")
 puts course.recent("rDifficulty") #=> 2.5
@@ -123,7 +122,7 @@ puts course.recent("rDifficulty") #=> 2.5
 
 ### Get professor's average "ability to stimulate student interest" rating ###
 ```ruby
-require 'pcr.rb'
+require 'pcr-ruby'
 pcr = PCR.new(API_TOKEN)
 instructor = pcr.instructor("1090-LINDA-H-ZHAO")
 puts instructor.average("rStimulateInterest").round(2) #=> 1.7
