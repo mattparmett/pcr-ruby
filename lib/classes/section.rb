@@ -7,15 +7,13 @@ class Section < PCR
     @id = id
     
     # Hit api to fill additional info
-    self.hit_api() unless hit_api == false
-    
+    self.hit_api unless hit_api == false
   end
   
-  def hit_api()
+  def hit_api
     data = ["aliases", "name", "path", "semester", "description"]
     api_url = @@api_endpt + "courses/" + self.id.to_s + "?token=" + @@token
     json = JSON.parse(open(api_url).read)
-    
     data.each do |d|
       case d
       when "aliases"
@@ -33,10 +31,9 @@ class Section < PCR
     
     # Get review data
     self.get_reviews
-    
   end
   
-  def get_reviews()
+  def get_reviews
     api_url = @@api_endpt + "courses/" + self.id.to_s + "/reviews?token=" + @@token
     json = JSON.parse(open(api_url).read)
     @comments = []
