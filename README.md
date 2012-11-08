@@ -59,13 +59,6 @@ most_recent_course = courses.last
 ```
 
 pcr-ruby's Course objects have the following instance variables:
-*	**course_code** -- a string in the format "DEPT-###", where "DEPT" is the four-letter department code and "###" is the three-digit course code.
-*	**sections** -- an array of Section objects for the Course across all time.  Useful for calculating average ratings and other cumulative statistics.
-*	**id** -- the Course's PCR API id. (Integer)
-*	**name** -- the Course's plain-English name.  (String)
-*	**path** -- the PCR API sub-path leading to the Course (or, more accurately, the Course History).  For example, "/coursehistories/1794/".  Or, more generally: "/coursehistories/[id]/".  (String)
-*	**reviews** -- an array of Hashes that contain review data for each of the Course's sections.
-
 * **aliases** -- an array of crosslistings (Array)
 * **credits** -- the number of credits awarded for the course (String)
 * **description** -- the PCR course description (String)
