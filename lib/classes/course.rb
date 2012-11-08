@@ -50,5 +50,19 @@ class Course < PCR
       end
     end
   end
+  
+  def average(metric)
+    # Aggregate ratings across all sections
+    total, num = 0, 0
+    self.sections.each do |section|
+      section.reviews.each do |review|
+        total += review.send(metric).to_f
+        num += 1
+      end
+    end
+    
+    # Return average value across all sections
+    (total / num)
+  end
 
 end

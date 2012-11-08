@@ -139,8 +139,20 @@ require 'pcr-ruby'
 course_code = "PSCI-150"
 pcr = PCR.new(API_TOKEN)
 psci150 = pcr.coursehistory(course_code)
-puts psci150.average("rDifficulty") #=> 2.59
+puts psci150.recent("rDifficulty") #=> 2.59
 ```
+
+### Get the course quality rating for a specific course/semester ###
+```ruby
+require 'pcr-ruby'
+course_code = "PSCI-150"
+pcr = PCR.new(API_TOKEN)
+psci150 = pcr.coursehistory(course_code)
+psci150_course = psci150.courses[3]
+puts psci150_course.semester #=> "2003C"
+puts psci150_course.average("rDifficulty") #=> 2.98
+```
+
 
 ## TODO ##
 * Implement refactored Instructor object
