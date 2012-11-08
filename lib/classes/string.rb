@@ -52,16 +52,16 @@ class ::String
     compSeason = s[4]
     
     if year.to_i > compYear.to_i #Later year
-      return true
+      return 1
     elsif year.to_i < compYear.to_i #Earlier year
-      return false
+      return -1
     elsif year.to_i == compYear.to_i #Same year, so test season
       if season > compSeason #Season is later
-        return true
+        return 1
       elsif season = compSeason #Exact same time
         return 0
       elsif season < compSeason #compSeason is later
-        return false
+        return -1
       end
     end
   end
