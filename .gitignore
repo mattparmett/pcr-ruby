@@ -20,3 +20,5 @@ tmp
 instructors.txt
 examples.rb
 json_responses.txt
+
+*.swp
