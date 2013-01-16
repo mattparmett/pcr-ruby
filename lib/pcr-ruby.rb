@@ -1,11 +1,11 @@
 require 'json'
 require 'open-uri'
-require 'classes/course'
-require 'classes/errors'
-require 'classes/section'
-require 'classes/coursehistory'
-require 'classes/review'
-require 'classes/string'
+#require 'classes/course'
+#require 'classes/errors'
+#require 'classes/section'
+#require 'classes/coursehistory'
+#require 'classes/review'
+#require 'classes/string'
 
 #PCR class handles token and api url, so both are easily changed
 module PCR
@@ -29,6 +29,24 @@ module PCR
 
     def dept(code)
       raise NotImplementedError.new("Departments have not yet been implemented.")
+    end
+  end
+
+  class << self
+    attr_accessor :token
+
+    def client
+      @client = PCR::Client.new(token) unless @client && token == @client.token
+      @client
+    end
+
+    def respond_to_missing?(method_name, include_private=false); client.respond_to?(method_name, include_private); end if RUBY_VERSION >= "1.9"
+    def respond_to?(method_name, include_private=false); client.respond_to?(method_name, include_private) || super; end if RUBY_VERSION < "1.9"
+
+  private
+    def method_missing(method_name, *args, &block)
+      return super unless client.respond_to?(method_name)
+      client.send(method_name, *args, &block)
     end
   end
 end
