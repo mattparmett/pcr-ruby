@@ -13,15 +13,14 @@ module PCR
       json = PCR.get_json(path)
 
       # Assign attrs
-      attrs = %(instructor num_reviewers num_students amount_learned comments
+      attrs = %w(instructor num_reviewers num_students amount_learned comments
                 retrieved id)
       set_attrs(attrs, json)
 
       # Assign ratings
-      ratings = json['ratings']
-      ratings.each do |name, val|
+      json['result']['ratings'].each do |name, val|
         self.instance_variable_set("@#{name}", val)
-        attr_accessor name
+        self.class.send(:attr_accessor, name)
       end
     end
   end
