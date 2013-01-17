@@ -16,9 +16,8 @@ module PCR
         Course.new(course['path'], course['semester'])
       end
 
-      #TODO: Use comparable mixin
       # Sort course list by semester
-      @courses.sort! { |a,b| a.compareSemester(b) }
+      @courses.sort!
       
       # Assign rest of attrs
       attrs = %w(id path reviews retrieved valid version)
