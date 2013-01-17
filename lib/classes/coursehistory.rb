@@ -1,5 +1,6 @@
 module PCR
   class CourseHistory
+    #TODO: attr_reader
     attr_accessor :course_code, :courses, :id, :path, :retrieved, :valid, :version
     
     def initialize(course_code)
@@ -18,6 +19,7 @@ module PCR
       @courses.sort! { |a,b| a.compareSemester(b) }
       
       # Assign rest of attrs
+      # TODO: Use mixins
       attrs = %w(id path reviews retrieved valid version)
       attrs.each do |attr|
         if json['result'][attr]

@@ -1,7 +1,7 @@
 require 'json'
 require 'open-uri'
 require 'classes/coursehistory'
-#require 'classes/course'
+require 'classes/course'
 #require 'classes/errors'
 #require 'classes/section'
 #require 'classes/review'
