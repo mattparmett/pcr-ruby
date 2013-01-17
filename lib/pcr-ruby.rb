@@ -10,17 +10,20 @@ require 'classes/review'
 #PCR class handles token and api url, so both are easily changed
 module PCR
   class Client
+    attr_reader :token
+
     def initialize(token, api_endpt = "http://api.penncoursereview.com/v1/")
       @token = token
       @api_endpt = api_endpt
     end
-  
+
     def get_json(path)
-      JSON.parse(open("#{@api_endpt + path}?token=#{@token}"))
+      #TODO: Error handling for bad/no token
+      JSON.parse(open("#{@api_endpt + path}?token=#{@token}").read)
     end
 
     def coursehistory(course_code)
-      CourseHistory.new(course_code, self.api_endpt, self.token)
+      CourseHistory.new(course_code)
     end
 
     def instructor(id)
@@ -43,7 +46,7 @@ module PCR
     def respond_to_missing?(method_name, include_private=false); client.respond_to?(method_name, include_private); end if RUBY_VERSION >= "1.9"
     def respond_to?(method_name, include_private=false); client.respond_to?(method_name, include_private) || super; end if RUBY_VERSION < "1.9"
 
-  private
+    private
     def method_missing(method_name, *args, &block)
       return super unless client.respond_to?(method_name)
       client.send(method_name, *args, &block)
