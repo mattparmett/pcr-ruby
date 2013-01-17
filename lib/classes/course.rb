@@ -1,6 +1,9 @@
+require 'classes/resource'
+
 module PCR
   class Course
     include Comparable
+    include PCR::Resource
     attr_reader :aliases, :credits, :description, :history, :id, 
                   :name, :path, :reviews, :sections, :semester, 
                   :retrieved, :valid, :version
@@ -10,7 +13,7 @@ module PCR
       @path, @semester = path, semester
 
       # Hit api
-      json = PCR.get_json(self.path)
+      json = PCR.get_json(path)
 
       # List of sections
       @sections = json['result']['sections']['values'].map do |section|
@@ -18,16 +21,9 @@ module PCR
       end
 
       # Assign attrs
-      # TODO: Use mixins
       attrs = %w(aliases credits description history id name reviews 
                  retrieved valid version)
-      attrs.each do |attr|
-        if json['result'][attr]
-          self.instance_variable_set("@#{attr}", json['result'][attr])
-        else
-          self.instance_variable_set("@#{attr}", json[attr])
-        end
-      end
+      set_attrs(attrs, json)
     end
 
     def <=>(other)

@@ -1,7 +1,9 @@
+require 'classes/resource'
+
 module PCR
   class CourseHistory
-    #TODO: attr_reader
-    attr_accessor :course_code, :courses, :id, :path, :retrieved, :valid, :version
+    include PCR::Resource
+    attr_reader :course_code, :courses, :id, :path, :retrieved, :valid, :version
     
     def initialize(course_code)
       @course_code = course_code
@@ -19,15 +21,8 @@ module PCR
       @courses.sort! { |a,b| a.compareSemester(b) }
       
       # Assign rest of attrs
-      # TODO: Use mixins
       attrs = %w(id path reviews retrieved valid version)
-      attrs.each do |attr|
-        if json['result'][attr]
-          self.instance_variable_set("@#{attr}", json['result'][attr])
-        else
-          self.instance_variable_set("@#{attr}", json[attr])
-        end
-      end
+      set_attrs(attrs, json)
     end
     
     def recent(metric)
