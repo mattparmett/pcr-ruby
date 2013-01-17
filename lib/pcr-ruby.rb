@@ -2,9 +2,9 @@ require 'json'
 require 'open-uri'
 require 'classes/coursehistory'
 require 'classes/course'
+require 'classes/section'
+require 'classes/review'
 #require 'classes/errors'
-#require 'classes/section'
-#require 'classes/review'
 #require 'classes/string'
 
 #PCR class handles token and api url, so both are easily changed
